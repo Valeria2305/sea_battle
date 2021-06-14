@@ -1,6 +1,7 @@
 .vscode
 .clangd
-build
-compile_commands.json
-/.vs
 .cache
+/build
+/compile_commands.json
+/.vs
+/cmake-build-*

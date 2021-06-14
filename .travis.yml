@@ -1,0 +1,16 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+dist: focal
+os:
+  - linux
+  - windows
+  - macos
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - cmake --build .
+  - ctest
