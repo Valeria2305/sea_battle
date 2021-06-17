@@ -1,41 +1,52 @@
+#include "game.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "game.h"
 
-/** объявление и инициализация констант
+// объявление и инициализация констант
 
- ширина и высота (в пикселях) окна приложения*/
-const size_t WIDTH = 1000, HEIGTH = 700;
+/** ширина (в пикселях) окна приложения*/
+const size_t WIDTH = 1000;
+/** высота (в пикселях) окна приложения*/
+const size_t HEIGTH = 700;
 
-// координаты (в пикселях) верхнего левого угла поля игрока-пользователя
+/** координаты (в пикселях) верхнего левого угла поля игрока-пользователя */
 const size_t X1 = 50, Y1 = 150;
 
-// координаты (в пикселях) верхнего левого угла поля игрока-компьютера
+/** координаты (в пикселях) верхнего левого угла поля игрока-компьютера */
 const size_t X2 = 550, Y2 = 150;
 
-// величина (в пикселях) стороны одного поля 10 на 10, а также величина стороны одной клетки
+/** величина (в пикселях) стороны одного поля 10 на 10, а также величина стороны
+ * одной клетки */
 const size_t SIDE = 400, CELL_SIDE = 40;
 
 /** класс, занимающийся отрисовкой всех фигур в окне приложения
  с функцией int main() взаимодействует посредством методов:
- MouseButtonPressed(float xf, float yf) - обрабатывает клик мыши в точку с координатами (xf, yf)
- Draw(sf::RenderWindow& window) - рисует все надписи, линии, значки и прочие фигуры на экране*/
+ MouseButtonPressed(float xf, float yf) - обрабатывает клик мыши в точку с
+ координатами (xf, yf) Draw(sf::RenderWindow& window) - рисует все надписи,
+ линии, значки и прочие фигуры на экране*/
 class GUI {
-private:
-    // объект класса Game, содержащий всю логику игры
+  private:
+    /**
+     * объект класса Game, содержащий всю логику игры
+     * */
     Game game;
 
-    // используемый в надписях шрифт
+    /**
+     * используемый в надписях шрифт */
     sf::Font font;
 
-    // надписи, обозначающие поле игрока, поле противника, объявление о конце игры соответственно
+    /** надписи, обозначающие поле игрока, поле противника, объявление о конце
+     * игры соответственно */
     sf::Text player_field_label, enemy_field_label, endgame_label;
 
-    // вектор линий клетчатых полей игроков и вектор всех остальных фигур на этих полях соответственно
+    /** вектор линий клетчатых полей игроков и вектор всех остальных фигур на
+     * этих полях соответственно */
     std::vector<sf::RectangleShape> field_grids, figures;
 
-private:
-    // рисует линии клетчатых полей игроков
+  private:
+    /**
+     *     рисует линии клетчатых полей игроков
+     */
     void CreateFieldGrids() {
         for (size_t i = 0; i < 11; ++i) {
             field_grids.push_back(sf::RectangleShape(sf::Vector2f(2.f, SIDE)));
@@ -60,46 +71,74 @@ private:
         }
     }
 
-    // ставим попадание в клетку (i, j) поля, верхний левый угол которого имеет координаты (x, y) в пикселях
+    /**
+     * ставим попадание в клетку (i, j) поля, верхний левый угол которого имеет
+     * координаты (x, y) в пикселях
+     * @param x
+     * @param y
+     * @param i
+     * @param j
+     */
     void AddTimes(size_t x, size_t y, size_t i, size_t j) {
         float width = 4;
         figures.push_back(sf::RectangleShape(sf::Vector2f(SIDE / 10, width)));
         figures[figures.size() - 1].rotate(45.f);
-        figures[figures.size() - 1].move(x + (j - 1) * float(SIDE) / 10 + width * 2.1, y + (i - 1) * float(SIDE) / 10 + width * 1.7);
+        figures[figures.size() - 1].move(
+            x + (j - 1) * float(SIDE) / 10 + width * 2.1,
+            y + (i - 1) * float(SIDE) / 10 + width * 1.7);
         figures[figures.size() - 1].setFillColor(sf::Color::Red);
 
         figures.push_back(sf::RectangleShape(sf::Vector2f(SIDE / 10, width)));
         figures[figures.size() - 1].rotate(-45.f);
-        figures[figures.size() - 1].move(x + (j - 1) * float(SIDE) / 10 + width * 1.7, y + (i - 1) * float(SIDE) / 10 + width * 8.6);
+        figures[figures.size() - 1].move(
+            x + (j - 1) * float(SIDE) / 10 + width * 1.7,
+            y + (i - 1) * float(SIDE) / 10 + width * 8.6);
         figures[figures.size() - 1].setFillColor(sf::Color::Red);
     }
 
-    // ставим промах в клетку (i, j) поля, верхний левый угол которого имеет координаты (x, y) в пикселях
+    /**
+     * ставим промах в клетку (i, j) поля, верхний левый угол которого имеет
+     * координаты (x, y) в пикселях
+     * @param x
+     * @param y
+     * @param i
+     * @param j
+     */
     void AddMark(size_t x, size_t y, size_t i, size_t j) {
         float width = 12;
         figures.push_back(sf::RectangleShape(sf::Vector2f(width, width)));
-        figures[figures.size() - 1].move(x + (j - 1) * SIDE / 10 + width + 3, y + (i - 1) * SIDE / 10 + width + 3);
+        figures[figures.size() - 1].move(x + (j - 1) * SIDE / 10 + width + 3,
+                                         y + (i - 1) * SIDE / 10 + width + 3);
         figures[figures.size() - 1].setFillColor(sf::Color(0, 0, 0, 0));
         figures[figures.size() - 1].setOutlineColor(sf::Color(255, 0, 0, 100));
         figures[figures.size() - 1].setOutlineThickness(2);
     }
 
-    /**ставим клетку некоторого корабля в клетку (i, j) поля,
-     верхний левый угол которого имеет координаты (x, y) в пикселях*/
+    /**
+     * ставим клетку некоторого корабля в клетку (i, j) поля,
+     верхний левый угол которого имеет координаты (x, y) в пикселях
+     * @param x
+     * @param y
+     * @param i
+     * @param j
+     */
     void AddShipCell(size_t x, size_t y, size_t i, size_t j) {
-        figures.push_back(sf::RectangleShape(sf::Vector2f(CELL_SIDE, CELL_SIDE)));
-        figures[figures.size() - 1].move(x + (j - 1) * CELL_SIDE, y + (i - 1) * CELL_SIDE);
+        figures.push_back(
+            sf::RectangleShape(sf::Vector2f(CELL_SIDE, CELL_SIDE)));
+        figures[figures.size() - 1].move(x + (j - 1) * CELL_SIDE,
+                                         y + (i - 1) * CELL_SIDE);
         figures[figures.size() - 1].setFillColor(sf::Color(100, 100, 100, 200));
     }
 
-    /** после каждого хода очищает и заново создает вектор figures всех фигур на полях
-     для их дальнейшей отрисовки*/
+    /** после каждого хода очищает и заново создает вектор figures всех фигур на
+     полях для их дальнейшей отрисовки*/
     void RecreateFiguresAfterTurn() {
         // очищение figures
         figures.clear();
-        
+
         // отрисовка всех фигур на поле игрока-пользователя
-        const std::vector<std::vector<int>>& player_field = game.GetPlayerField();
+        const std::vector<std::vector<int>> &player_field =
+            game.GetPlayerField();
         for (size_t i = 1; i <= 10; ++i) {
             for (size_t j = 1; j <= 10; ++j) {
                 // занята ли клетка кораблем
@@ -120,7 +159,7 @@ private:
         }
 
         // отрисовка всех фигур на поле игрока-компьютера
-        const std::vector<std::vector<int>>& enemy_field = game.GetEnemyField();
+        const std::vector<std::vector<int>> &enemy_field = game.GetEnemyField();
         for (size_t i = 1; i <= 10; ++i) {
             for (size_t j = 1; j <= 10; ++j) {
                 // проверка на выстрел-промах в клетку (i, j)
@@ -135,13 +174,15 @@ private:
             }
         }
     }
-    
-public:
-    // конструктор графического интерфейса
+
+  public:
+    /**
+     * конструктор графического интерфейса
+     */
     GUI() {
         // загрузка шрифта
         font.loadFromFile("C:/lera/src/Micra_Normal.ttf");
-        
+
         // установка параметров надписи "Поле игрока"
         player_field_label.setString("Your field");
         player_field_label.setFont(font);
@@ -172,7 +213,11 @@ public:
         RecreateFiguresAfterTurn();
     }
 
-    // обрабатывает клик мыши в точку с координатами (xf, yf)
+    /**
+     * обрабатывает клик мыши в точку с координатами (xf, yf)
+     * @param xf
+     * @param yf
+     */
     void MouseButtonPressed(float xf, float yf) {
         // не закончилась ли игра
         if (game.IsFinished()) {
@@ -202,13 +247,16 @@ public:
         }
     }
 
-    // рисует все надписи, линии, значки и прочие фигуры в окне windows
-    void Draw(sf::RenderWindow& window) {
-        for (const sf::RectangleShape& line : field_grids) {
+    /**
+     * рисует все надписи, линии, значки и прочие фигуры в окне windows
+     * @param window окно для рисования
+     */
+    void Draw(sf::RenderWindow &window) {
+        for (const sf::RectangleShape &line : field_grids) {
             window.draw(line);
         }
 
-        for (const sf::RectangleShape& fig : figures) {
+        for (const sf::RectangleShape &fig : figures) {
             window.draw(fig);
         }
 
@@ -220,26 +268,24 @@ public:
     }
 };
 
-int main()
-{
+int main() {
     // создание окна приложения
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Sea Battle");
-    
+
     // объект GUI, занимающийся отрисовкой
     GUI gui;
 
     // пока окно открыто
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         // создаем событие
         sf::Event event;
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             // проверка вида события
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::MouseButtonPressed) {
-                gui.MouseButtonPressed(event.mouseButton.x, event.mouseButton.y);
+                gui.MouseButtonPressed(event.mouseButton.x,
+                                       event.mouseButton.y);
             }
         }
 
