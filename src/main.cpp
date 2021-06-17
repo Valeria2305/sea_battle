@@ -7,13 +7,13 @@
  ширина и высота (в пикселях) окна приложения*/
 const size_t WIDTH = 1000, HEIGTH = 700;
 
-/** координаты (в пикселях) верхнего левого угла поля игрока-пользователя*/
+// координаты (в пикселях) верхнего левого угла поля игрока-пользователя
 const size_t X1 = 50, Y1 = 150;
 
-/** координаты (в пикселях) верхнего левого угла поля игрока-компьютера*/
+// координаты (в пикселях) верхнего левого угла поля игрока-компьютера
 const size_t X2 = 550, Y2 = 150;
 
-/** величина (в пикселях) стороны одного поля 10 на 10, а также величина стороны одной клетки*/
+// величина (в пикселях) стороны одного поля 10 на 10, а также величина стороны одной клетки
 const size_t SIDE = 400, CELL_SIDE = 40;
 
 /** класс, занимающийся отрисовкой всех фигур в окне приложения
@@ -22,20 +22,20 @@ const size_t SIDE = 400, CELL_SIDE = 40;
  Draw(sf::RenderWindow& window) - рисует все надписи, линии, значки и прочие фигуры на экране*/
 class GUI {
 private:
-    /** объект класса Game, содержащий всю логику игры*/
+    // объект класса Game, содержащий всю логику игры
     Game game;
 
-    /** используемый в надписях шрифт*/
+    // используемый в надписях шрифт
     sf::Font font;
 
-    /** надписи, обозначающие поле игрока, поле противника, объявление о конце игры соответственно*/
+    // надписи, обозначающие поле игрока, поле противника, объявление о конце игры соответственно
     sf::Text player_field_label, enemy_field_label, endgame_label;
 
-    /** вектор линий клетчатых полей игроков и вектор всех остальных фигур на этих полях соответственно*/
+    // вектор линий клетчатых полей игроков и вектор всех остальных фигур на этих полях соответственно
     std::vector<sf::RectangleShape> field_grids, figures;
 
 private:
-    /** рисует линии клетчатых полей игроков*/
+    // рисует линии клетчатых полей игроков
     void CreateFieldGrids() {
         for (size_t i = 0; i < 11; ++i) {
             field_grids.push_back(sf::RectangleShape(sf::Vector2f(2.f, SIDE)));
@@ -60,7 +60,7 @@ private:
         }
     }
 
-    /** ставим попадание в клетку (i, j) поля, верхний левый угол которого имеет координаты (x, y) в пикселях*/
+    // ставим попадание в клетку (i, j) поля, верхний левый угол которого имеет координаты (x, y) в пикселях
     void AddTimes(size_t x, size_t y, size_t i, size_t j) {
         float width = 4;
         figures.push_back(sf::RectangleShape(sf::Vector2f(SIDE / 10, width)));
@@ -74,7 +74,7 @@ private:
         figures[figures.size() - 1].setFillColor(sf::Color::Red);
     }
 
-    /** ставим промах в клетку (i, j) поля, верхний левый угол которого имеет координаты (x, y) в пикселях*/
+    // ставим промах в клетку (i, j) поля, верхний левый угол которого имеет координаты (x, y) в пикселях
     void AddMark(size_t x, size_t y, size_t i, size_t j) {
         float width = 12;
         figures.push_back(sf::RectangleShape(sf::Vector2f(width, width)));
@@ -84,7 +84,7 @@ private:
         figures[figures.size() - 1].setOutlineThickness(2);
     }
 
-    /** ставим клетку некоторого корабля в клетку (i, j) поля, 
+    /**ставим клетку некоторого корабля в клетку (i, j) поля,
      верхний левый угол которого имеет координаты (x, y) в пикселях*/
     void AddShipCell(size_t x, size_t y, size_t i, size_t j) {
         figures.push_back(sf::RectangleShape(sf::Vector2f(CELL_SIDE, CELL_SIDE)));
@@ -98,37 +98,37 @@ private:
         // очищение figures
         figures.clear();
         
-        /** отрисовка всех фигур на поле игрока-пользователя*/
+        // отрисовка всех фигур на поле игрока-пользователя
         const std::vector<std::vector<int>>& player_field = game.GetPlayerField();
         for (size_t i = 1; i <= 10; ++i) {
             for (size_t j = 1; j <= 10; ++j) {
-                /** занята ли клетка кораблем*/
+                // занята ли клетка кораблем
                 if (player_field[i][j] == 10 || player_field[i][j] == 11) {
                     AddShipCell(X1, Y1, i, j);
                 }
 
-                /** проверка на выстрел-промах в клетку (i, j)*/
+                // проверка на выстрел-промах в клетку (i, j)
                 if (player_field[i][j] == 1 || player_field[i][j] == -2) {
                     AddMark(X1, Y1, i, j);
                 }
 
-                /** проверка на выстрел-попадание в клетку (i, j)*/
+                // проверка на выстрел-попадание в клетку (i, j)
                 if (player_field[i][j] == 11) {
                     AddTimes(X1, Y1, i, j);
                 }
             }
         }
 
-        /** отрисовка всех фигур на поле игрока-компьютера*/
+        // отрисовка всех фигур на поле игрока-компьютера
         const std::vector<std::vector<int>>& enemy_field = game.GetEnemyField();
         for (size_t i = 1; i <= 10; ++i) {
             for (size_t j = 1; j <= 10; ++j) {
-                /** проверка на выстрел-промах в клетку (i, j)*/
+                // проверка на выстрел-промах в клетку (i, j)
                 if (enemy_field[i][j] == 1 || enemy_field[i][j] == -2) {
                     AddMark(X2, Y2, i, j);
                 }
 
-                /** проверка на выстрел-попадание в клетку (i, j)*/
+                // проверка на выстрел-попадание в клетку (i, j)
                 if (enemy_field[i][j] == 11) {
                     AddTimes(X2, Y2, i, j);
                 }
@@ -137,34 +137,34 @@ private:
     }
     
 public:
-    /** конструктор графического интерфейса*/
+    // конструктор графического интерфейса
     GUI() {
-        /** загрузка шрифта*/
+        // загрузка шрифта
         font.loadFromFile("C:/lera/src/Micra_Normal.ttf");
         
-        /** установка параметров надписи "Поле игрока"*/
+        // установка параметров надписи "Поле игрока"
         player_field_label.setString("Your field");
         player_field_label.setFont(font);
         player_field_label.setCharacterSize(30);
         player_field_label.setFillColor(sf::Color::Black);
         player_field_label.setPosition(100, 50);
 
-        /** установка параметров надписи "Поле противника"*/
+        // установка параметров надписи "Поле противника"
         enemy_field_label.setString("Enemy field");
         enemy_field_label.setFont(font);
         enemy_field_label.setCharacterSize(30);
         enemy_field_label.setFillColor(sf::Color::Black);
         enemy_field_label.setPosition(600, 50);
 
-        /** установка параметров надписи об окончании игры*/
+        // установка параметров надписи об окончании игры
         endgame_label.setFont(font);
         endgame_label.setCharacterSize(30);
         endgame_label.setFillColor(sf::Color::Black);
 
-        /** Создание полей (а именно их решетки)*/
+        // Создание полей (а именно их решетки)
         CreateFieldGrids();
 
-        /** генерирует рандомную расстановку кораблей на полях игроков*/
+        // генерирует рандомную расстановку кораблей на полях игроков
         game.GenerateRandomShipsArrangement(true);
         game.GenerateRandomShipsArrangement(false);
 
@@ -172,9 +172,9 @@ public:
         RecreateFiguresAfterTurn();
     }
 
-    /** обрабатывает клик мыши в точку с координатами (xf, yf)*/
+    // обрабатывает клик мыши в точку с координатами (xf, yf)
     void MouseButtonPressed(float xf, float yf) {
-        /** не закончилась ли игра*/
+        // не закончилась ли игра
         if (game.IsFinished()) {
             return;
         }
@@ -183,7 +183,7 @@ public:
         xc = round(xf);
         yc = round(yf);
 
-        /** проверка, произвошел ли данный клик на поле игрока-компьютера*/
+        // проверка, произвошел ли данный клик на поле игрока-компьютера
         if (X2 <= xc && xc <= X2 + SIDE && Y2 <= yc && yc <= Y2 + SIDE) {
             size_t i, j;
             j = (xc - X2) / (SIDE / 10) + 1;
@@ -191,7 +191,7 @@ public:
             game.MouseButtonPressed(i, j);
             RecreateFiguresAfterTurn();
 
-            /** после каждого хода проверка: не закончилась ли игра*/
+            // после каждого хода проверка: не закончилась ли игра
             if (game.UserHasWon()) {
                 endgame_label.setString("Congratulations! You've won!");
                 endgame_label.setPosition(160, 600);
@@ -202,7 +202,7 @@ public:
         }
     }
 
-    /** рисует все надписи, линии, значки и прочие фигуры в окне window*/
+    // рисует все надписи, линии, значки и прочие фигуры в окне windows
     void Draw(sf::RenderWindow& window) {
         for (const sf::RectangleShape& line : field_grids) {
             window.draw(line);
@@ -222,20 +222,20 @@ public:
 
 int main()
 {
-    /** создание окна приложения*/
+    // создание окна приложения
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Sea Battle");
     
-    /** объект GUI, занимающийся отрисовкой*/
+    // объект GUI, занимающийся отрисовкой
     GUI gui;
 
-    /** пока окно открыто*/
+    // пока окно открыто
     while (window.isOpen())
     {
-        /**создаем событие*/
+        // создаем событие
         sf::Event event;
         while (window.pollEvent(event))
         {
-            /** проверка вида события*/
+            // проверка вида события
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::MouseButtonPressed) {
@@ -243,11 +243,11 @@ int main()
             }
         }
 
-        /** очистить экран и сделать белый фон*/
+        // очистить экран и сделать белый фон
         window.clear(sf::Color::White);
-        /** отрисовка всех элементов*/
+        // отрисовка всех элементов
         gui.Draw(window);
-        /** показ окна*/
+        // показ окна
         window.display();
     }
 

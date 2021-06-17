@@ -1,4 +1,4 @@
-#include "game.h"
+ #include "game.h"
 #include "doctest.h"
 
 TEST_CASE("function PlaceShip() test") {
