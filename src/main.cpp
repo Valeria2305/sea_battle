@@ -181,7 +181,7 @@ class GUI {
      */
     GUI() {
         // загрузка шрифта
-        font.loadFromFile("C:/lera/src/Micra_Normal.ttf");
+        font.loadFromFile("/src/Micra_Normal.ttf");
 
         // установка параметров надписи "Поле игрока"
         player_field_label.setString("Your field");
